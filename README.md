@@ -34,7 +34,7 @@
 
 - Setup the local configurations (Copy content from `.env.sample` file to `.env` file):
     ```
-    cp .env.example .env
+    cp .env.sample .env
     ```
     
 - Run tests in your terminal.
