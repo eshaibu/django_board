@@ -1,0 +1,5 @@
+Django==2.1
+django-widget-tweaks==1.4.2
+psycopg2==2.7.5
+python-dotenv==0.9.1
+pytz==2018.5
