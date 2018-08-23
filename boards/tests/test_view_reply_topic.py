@@ -17,7 +17,7 @@ class ReplyTopicTestCase(TestCase):
         self.password = '123'
         user = User.objects.create_user(username=self.username, email='john@doe.com', password=self.password)
         self.topic = Topic.objects.create(subject='Hello, world', board=self.board, starter=user)
-        Post.objects.create(message='Lorem ipsum dolor sit amet', topic=self.topic, created_by=user)
+        self.post = Post.objects.create(message='Lorem ipsum dolor sit amet', topic=self.topic, created_by=user)
         self.url = reverse('reply_topic', kwargs={'pk': self.board.pk, 'topic_pk': self.topic.pk})
 
 
@@ -38,7 +38,7 @@ class ReplyTopicTests(ReplyTopicTestCase):
         self.assertEquals(self.response.status_code, 200)
 
     def test_view_function(self):
-        view = resolve('/boards/1/topics/1/reply/')
+        view = resolve('/boards/{board_id}/topics/{topic_id}/reply/'.format(board_id=self.board.pk,topic_id=self.topic.pk))
         self.assertEquals(view.func, reply_topic)
 
     def test_csrf(self):
@@ -66,7 +66,8 @@ class SuccessfulReplyTopicTests(ReplyTopicTestCase):
         """
         A valid form submission should redirect the user
         """
-        topic_posts_url = reverse('topic_posts', kwargs={'pk': self.board.pk, 'topic_pk': self.topic.pk})
+        url = reverse('topic_posts', kwargs={'pk': self.board.pk, 'topic_pk': self.topic.pk})
+        topic_posts_url = '{url}?page={page}#{id}'.format(url=url, page= self.topic.get_page_count(), id=self.post.pk + 1)
         self.assertRedirects(self.response, topic_posts_url)
 
     def test_reply_created(self):
