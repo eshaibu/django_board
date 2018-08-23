@@ -17,12 +17,12 @@ from django.urls import path
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 
-from accounts import views as account_views
+from accounts import views as accounts_views
 from boards import views
 
 urlpatterns = [
     path('', views.BoardListView.as_view(), name='home'),
-    path('signup/', account_views.signup, name='signup'),
+    path('signup/', accounts_views.signup, name='signup'),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 
@@ -42,6 +42,8 @@ urlpatterns = [
     path('reset/complete/',
         auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
         name='password_reset_complete'),
+
+    path('settings/account/', accounts_views.UserUpdateView.as_view(), name='my_account'),
 
     path('settings/password/', auth_views.PasswordChangeView.as_view(template_name='password_change.html'),
         name='password_change'),
