@@ -15,11 +15,20 @@ class BoardListView(ListView):
     template_name = 'home.html'
 
 
-def board_topics(request, pk):
-    board = get_object_or_404(Board, pk=pk)
-    topics = board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
-    return render(request, 'topics.html', {'board': board, 'topics': topics})
+class TopicListView(ListView):
+    model = Topic
+    context_object_name = 'topics'
+    template_name = 'topics.html'
+    paginate_by = 20
 
+    def get_context_data(self, **kwargs):
+        kwargs['board'] = self.board
+        return super().get_context_data(**kwargs)
+
+    def get_queryset(self):
+        self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
+        queryset = self.board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+        return queryset
 
 @login_required
 def new_topic(request, pk):
